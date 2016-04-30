@@ -66,14 +66,17 @@ N : nil
 ebnf
 
 ```
-program    = { expression }
-expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | literal
-assign_exp = "=" ident expression
-call_exp   = "~" expression arg_list
-lambda_exp = "\" arg_list expression 
-arg_list   = "(" { expression "," } ")"
-op_exp     = op expression expression
-op         = "+" | "-"
-if_exp     = "?" expression ":" expression expression
+program    = { expression } ;
+expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | literal | variable ;
+assign_exp = "=" ident expression ;
+call_exp   = "~" expression arg_list ;
+lambda_exp = "\" arg_list expression ;
+arg_list   = "(" { expression "," } ")" ;
+op_exp     = op expression expression ;
+op         = "+" | "-" ;
+if_exp     = "?" expression ":" expression expression ;
+literal    = { digits } ;
+digits     = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+variable   = alphabet
 ```
 
