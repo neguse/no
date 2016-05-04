@@ -32,22 +32,29 @@
 ## operations
 
 ```
-symbol (`r`oot or `l`eaf) : meaning
+symbol (`p`arent or `l`eaf) : meaning
 
-= (r) : assignment(definition)
+= (p) : assignment(definition)
 
-~ (r) : call function
-\ (r) : create function(lambda)
+~ (p) : call function
+\ (p) : create function(lambda)
 _ (l) : indicator of no arguments on function call
-( (r) : begin of arguments on function
+( (p) : begin of arguments on function
 , (l) : delimiter of arguments on function
 ) (l) : end of arguments of function
 
-+ (r) : add
-- (r) : sub
++ (p) : add
+- (p) : sub
+= (p) : equal
+< (p) : less than
+> (p) : greater than
 
-? (r) : if
-: (r) : then
+? (p) : if
+: (p) : then
+
+# (p) : 2 digits hex
+
+. (p) : cons
 
 ```
 
@@ -56,7 +63,6 @@ _ (l) : indicator of no arguments on function call
 called by `~`
 
 I : read
-C : cons
 A : car
 D : cdr
 N : nil
@@ -66,17 +72,17 @@ N : nil
 ebnf
 
 ```
-program    = { expression } ;
-expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | literal | variable ;
-assign_exp = "=" ident expression ;
+program    = "{" { expression ";" } "}" ;
+expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | hex2 | hex | variable ;
+assign_exp = "=" variable expression ;
 call_exp   = "~" expression arg_list ;
 lambda_exp = "\" arg_list expression ;
 arg_list   = "(" { expression "," } ")" ;
 op_exp     = op expression expression ;
 op         = "+" | "-" ;
 if_exp     = "?" expression ":" expression expression ;
-literal    = { digits } ;
-digits     = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+hex2       = # hex hex ;
+hex        = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" | "b" | "c" | "d" | "f" ;
 variable   = alphabet
 ```
 
