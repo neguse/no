@@ -39,9 +39,12 @@ symbol (`p`arent or `l`eaf) : meaning
 ~ (p) : call function
 \ (p) : create function(lambda)
 _ (l) : indicator of no arguments on function call
-( (p) : begin of arguments on function
-, (l) : delimiter of arguments on function
-) (l) : end of arguments of function
+( (p) : begin of arguments on function call
+, (l) : delimiter of arguments on function call
+) (l) : end of arguments of function call
+[ (p) : begin of arguments on function creation
+. (l) : delimiter of arguments on function creation
+] (l) : end of arguments of function creation
 
 + (p) : add
 - (p) : sub
@@ -50,11 +53,11 @@ _ (l) : indicator of no arguments on function call
 > (p) : greater than
 
 ? (p) : if
-: (p) : then
+| (p) : then
 
 # (p) : 2 digits hex
 
-. (p) : cons
+: (p) : cons
 
 ```
 
@@ -76,11 +79,12 @@ program    = "{" { expression ";" } "}" ;
 expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | hex2 | hex | variable ;
 assign_exp = "=" variable expression ;
 call_exp   = "~" expression arg_list ;
-lambda_exp = "\" arg_list expression ;
-arg_list   = "(" { expression "," } ")" ;
+call_arg_list   = "(" { expression "," } ")" ;
+lambda_exp = "\" lambda_arg_list expression ;
+lambda_arg_list   = "[" { variable "." } "]" ;
 op_exp     = op expression expression ;
-op         = "+" | "-" ;
-if_exp     = "?" expression ":" expression expression ;
+op         = "+" | "-" | "<" | ">" | ":" ;
+if_exp     = "?" expression "|" expression expression ;
 hex2       = # hex hex ;
 hex        = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" | "b" | "c" | "d" | "f" ;
 variable   = alphabet
