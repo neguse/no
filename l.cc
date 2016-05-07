@@ -373,6 +373,7 @@ public:
     Ref parent;
     std::map<char, std::shared_ptr<Value>> m;
 
+    void Extend(char c, std::shared_ptr<Value> v) { m[c] = v; }
     void Set(char c, std::shared_ptr<Value> v) {
       auto it = m.find(c);
       if (it != m.end()) {
@@ -557,11 +558,12 @@ public:
     } break;
     case SyntaxType::AssignExp: {
       auto k = n->a->c;
-      auto v = Eval(n->a->d, e);
-      e->Set(k, v);
+      auto v = Eval(n->d, e);
+      e->Extend(k, v);
     } break;
     case SyntaxType::CallExp: {
-      auto c = Eval(n->a, e)->GetClosure();
+      auto cv = Eval(n->a, e);
+      auto c = cv->GetClosure();
       Frame::Ref f = std::make_shared<Frame>();
       f->parent = c->e;
 
@@ -577,7 +579,7 @@ public:
           assert(larg->st != SyntaxType::LambdaArgListEnd);
           assert(carg->st != SyntaxType::CallArgListEnd);
           auto arg = Eval(carg->a, e);
-          f->Set(larg->a->c, arg);
+          f->Extend(larg->a->c, arg);
           larg = larg->d;
           carg = carg->d;
         }
@@ -604,6 +606,7 @@ public:
     case SyntaxType::LambdaExp: {
       Value::Ref v = std::make_shared<Value>();
       v->SetClosure(std::make_shared<Closure>(Closure{e, n}));
+      return v;
     } break;
     case SyntaxType::OpExp: {
       auto a1 = Eval(n->a, e);
@@ -634,9 +637,9 @@ public:
     case SyntaxType::IfExp: {
       auto cond = Eval(n->a, e);
       if (cond->True()) {
-        Eval(n->d->a, e);
+        return Eval(n->d->a, e);
       } else {
-        Eval(n->d->d, e);
+        return Eval(n->d->d, e);
       }
     } break;
     case SyntaxType::Hex2: {
