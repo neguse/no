@@ -3,6 +3,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <iostream>
 
 struct Position {
   int line, col;
@@ -221,9 +222,15 @@ public:
       };
     }
     {
-      syntax_['='] = Syntax{
+      syntax_['!'] = Syntax{
           HierarchicalType::Parent, SyntaxType::AssignExp,
           AcceptableSyntax{SyntaxType::Variable}, expAcceptable,
+      };
+    }
+    {
+      syntax_['='] = Syntax{
+          HierarchicalType::Parent, SyntaxType::OpExp, expAcceptable,
+          expAcceptable,
       };
     }
     {
@@ -356,9 +363,6 @@ int hex2i(char c) {
 }
 
 class LangInterpreter {
-private:
-  int argc_;
-  char **argv_;
 
 public:
   enum class ValueKind {
@@ -488,13 +492,36 @@ public:
       }
     }
   };
-  LangInterpreter(int argc, char **argv) : argc_(argc), argv_(argv) {}
+  LangInterpreter() {}
+  Value::Ref StringToList(const char *s) {
+    if (*s == '\0') {
+      Value::Ref v = std::make_shared<Value>();
+      v->SetList(nullptr);
+      return v;
+    } else {
+      Value::Ref v = std::make_shared<Value>();
+      Cons::Ref c = std::make_shared<Cons>();
+      Value::Ref vi = std::make_shared<Value>();
+      vi->SetInteger(*s);
+      c->car = vi;
+      c->cdr = StringToList(s + 1);
+      v->SetList(c);
+      return v;
+    }
+  }
   Value::Ref ReadI() {
+    int i = 0;
+    std::cin >> i;
     Value::Ref v = std::make_shared<Value>();
+    v->SetInteger(i);
+    v->Print();
     return v;
   }
   Value::Ref ReadS() {
-    Value::Ref v = std::make_shared<Value>();
+    std::string s;
+    std::cin >> s;
+    Value::Ref v = StringToList(s.c_str());
+    v->Print();
     return v;
   }
   void PrintAsString(Value::Ref v) {
@@ -549,6 +576,8 @@ public:
     switch (n->st) {
     case SyntaxType::Program:
     case SyntaxType::ProgramCont: {
+      Lang l;
+      l.Print(n->a);
       auto v = Eval(n->a, e);
       if (n->d->st == SyntaxType::ProgramEnd) {
         return v;
@@ -619,6 +648,15 @@ public:
       case '-':
         v->SetInteger(a1->GetInteger() - a2->GetInteger());
         return v;
+      case '=':
+        if (a1->kind != a2->kind) {
+          v->SetInteger(0);
+        } else if (a1->kind == ValueKind::Integer) {
+          v->SetInteger(a1->GetInteger() == a2->GetInteger() ? 1 : 0);
+        } else if (a1->kind == ValueKind::List) {
+          v->SetInteger(a1->GetList() == a2->GetList() ? 1 : 0);
+        }
+        return v;
       case '<':
         v->SetInteger(a1->GetInteger() < a2->GetInteger() ? 1 : 0);
         return v;
@@ -682,7 +720,7 @@ int main(int argc, char **argv) {
     return 3;
   }
 
-  auto i = LangInterpreter(argc - 2, argv + 2);
+  auto i = LangInterpreter();
   i.Exec(n);
 
   return 0;

@@ -34,7 +34,7 @@
 ```
 symbol (`p`arent or `l`eaf) : meaning
 
-= (p) : assignment(definition)
+! (p) : assignment(definition)
 
 ~ (p) : call function
 \ (p) : create function(lambda)
@@ -77,7 +77,7 @@ ebnf
 ```
 program    = "{" { expression ";" } "}" ;
 expression = assign_exp | call_exp | lambda_exp | op_exp | if_exp | hex2 | hex | variable ;
-assign_exp = "=" variable expression ;
+assign_exp = "!" variable expression ;
 call_exp   = "~" expression arg_list ;
 call_arg_list   = "(" { expression "," } ")" ;
 lambda_exp = "\" lambda_arg_list expression ;
