@@ -514,14 +514,12 @@ public:
     std::cin >> i;
     Value::Ref v = std::make_shared<Value>();
     v->SetInteger(i);
-    v->Print();
     return v;
   }
   Value::Ref ReadS() {
     std::string s;
     std::cin >> s;
     Value::Ref v = StringToList(s.c_str());
-    v->Print();
     return v;
   }
   void PrintAsString(Value::Ref v) {
@@ -569,15 +567,13 @@ public:
       e->Set('N', v);
     }
     auto v = Eval(n, e);
-    v->Print();
+    // v->Print();
     PrintAsString(v);
   }
   Value::Ref Eval(Node::Ref n, Frame::Ref e) {
     switch (n->st) {
     case SyntaxType::Program:
     case SyntaxType::ProgramCont: {
-      Lang l;
-      l.Print(n->a);
       auto v = Eval(n->a, e);
       if (n->d->st == SyntaxType::ProgramEnd) {
         return v;
@@ -589,6 +585,7 @@ public:
       auto k = n->a->c;
       auto v = Eval(n->d, e);
       e->Extend(k, v);
+      return v;
     } break;
     case SyntaxType::CallExp: {
       auto cv = Eval(n->a, e);
@@ -715,7 +712,7 @@ int main(int argc, char **argv) {
   Lang l;
 
   auto n = l.Parse(input);
-  l.Print(n);
+  // l.Print(n);
   if (!l.Validate(n)) {
     return 3;
   }
