@@ -697,7 +697,7 @@ public:
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    printf("Usage: ./l <program>\n");
+    printf("Usage: ./no <program>\n");
     return 1;
   }
 
