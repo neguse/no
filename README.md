@@ -32,8 +32,9 @@ $ make
 実行ファイルをビルドしたあと、以下のようにサンプルプログラムを実行できます。
 
 ```
-$ ./no answer/hello.no 
-helo world
+$ ./no answer/hello.no
+hello world
+
 ```
 
 なお、`answer/fibonacci.no`の実行にはかなりの長い時間かかります。
