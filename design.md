@@ -68,7 +68,8 @@ _ (子) : 関数呼び出しの際に引数がないことを示す
 組み込み関数は`~`で呼び出す
 
 ```
-I : read
+I : read integer
+S : read string
 A : car
 D : cdr
 N : nil
